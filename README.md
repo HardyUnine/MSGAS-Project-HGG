@@ -1,4 +1,4 @@
-#1. Our idea
+# 1. Our idea
 Deadlock is a Valve game still in development, but it already has substantial lore for its characters and world. Our app
 reads the Deadlock community wiki and generates new characters that fit this lore: a structured profile and background
 story, plus a portrait from a fixed small image model (not part of the comparison). A good character should match the
