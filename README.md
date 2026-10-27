@@ -5,18 +5,18 @@ story, plus a portrait from a fixed small image model (not part of the compariso
 lore without copying an existing hero, so consistency and novelty work against each other. Everything should run locally
 on a 16 GB GPU.
 
-#2. Research Question and Hypotheses
+# 2. Research Question and Hypotheses
 What is the best way to give a small local model the lore (RAG, long context or LoRA fine-tuning) if
 we care about lore consistency, novelty and cost, and does the answer change when the knowledge base
 gets bigger?
-###H1 RAG is cheaper than long context, but probably misses facts spread over several pages, so consistency will be lower.
-###H2 Fine-tuning should be cheapest at inference, but will probably copy existing heroes more (lower novelty).
-###H3 Quantization (4-bit weights, quantized KV cache) should hurt long context more than RAG, because long context
+### H1 RAG is cheaper than long context, but probably misses facts spread over several pages, so consistency will be lower.
+### H2 Fine-tuning should be cheapest at inference, but will probably copy existing heroes more (lower novelty).
+### H3 Quantization (4-bit weights, quantized KV cache) should hurt long context more than RAG, because long context
 needs a large KV cache while RAG keeps prompts short. It should also save the most memory for long context.
-###H4 The best strategy depends on corpus size: with a small wiki, long context should win; as pages are added, it becomes
+### H4 The best strategy depends on corpus size: with a small wiki, long context should win; as pages are added, it becomes
 too long and expensive, and RAG should catch up. We retrain fine-tuning at each size and report what happens.
 
-#3. Approach
+# 3. Approach
 Data: We snapshot the wiki and record the date, since it changes during development. The text is under CC BY-SA
 4.0, so we credit it. We clean it, split it into sections and extract facts into structured fields.
 Models: We have not chosen exact models yet. Core: one 3B model, so 16-bit fits in 16 GB and we can compare 16-bit
@@ -24,25 +24,25 @@ vs. 4-bit. One 8B model in 4-bit, used as both upper reference and LLM judge. Po
 small few-step image model.
 
 ---
-###Core 
 
+### Core 
 No lore (baseline), RAG (varying chunk size and k), long context, and LoRA on wiki-derived data. We
 compare 16-bit vs. 4-bit weights and KV-cache quantization only for RAG and long context, since H3
 concerns those methods; 3 corpus sizes.
-###Stretch 
 
+### Stretch 
 RAG + LoRA, an 8B reference model, prefix caching as a studied factor (used anyway to keep long-context
 runs cheap), best-of-N with a different selection check than the final judge, and few-step vs. full diffusion
 for portraits.
 
-###Corpus size 
-
+### Corpus size 
 Size 1 is lore only; sizes 2 and 3 add pages from other game wikis as distractors. We measure token counts
 first. If long context does not fit in the context window or VRAM, we report “does not fit” rather than
 truncating. LoRA is retrained at each size
+
 ---
 
-#4. Evaluation
+# 4. Evaluation
 A new character has no reference answer, so we use measurable proxies:
 • Structure validity: share of outputs that parse and contain all required fields: name, faction, role, appearance,
 background, personality, and abilities.
